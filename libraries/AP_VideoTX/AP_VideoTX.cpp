@@ -51,6 +51,7 @@ const AP_Param::GroupInfo AP_VideoTX::var_info[] = {
     // @DisplayName: Video Transmitter Band
     // @Description: Video Transmitter Band
     // @User: Standard
+    // @ReadOnly: True
     // @Values: 0:Band A,1:Band B,2:Band E,3:Airwave,4:RaceBand,5:Low RaceBand,6:1G3 Band A,7:1G3 Band B,8:Band X,9:3G3 Band A,10:3G3 Band B
     AP_GROUPINFO("BAND",  4, AP_VideoTX, _band, 0),
 
@@ -75,6 +76,50 @@ const AP_Param::GroupInfo AP_VideoTX::var_info[] = {
     // @Range: 25 1000
     AP_GROUPINFO("MAX_POWER", 7, AP_VideoTX, _max_power_mw, 800),
 
+	// @Param: RC_POS0_FREQ
+    // @DisplayName: Video Transmitter Frequency for CH POS 0
+    // @Description: Video Transmitter Frequency
+    // @User: Standard
+    // @Range: 1000 6000
+	AP_GROUPINFO("RC_POS0_FREQ", 8, AP_VideoTX, _rc_pos0_freq, 4010),
+
+	// @Param: RC_POS1_FREQ
+	// @DisplayName: Video Transmitter Frequency for CH POS 1
+	// @Description: Video Transmitter Frequency
+	// @User: Standard
+	// @ReadOnly: True
+	// @Range: 1000 6000
+	AP_GROUPINFO("RC_POS1_FREQ", 9, AP_VideoTX, _rc_pos1_freq, 4100),
+
+	// @Param: RC_POS2_FREQ
+	// @DisplayName: Video Transmitter Frequency for CH POS 2
+	// @Description: Video Transmitter Frequency
+	// @User: Standard
+	// @Range: 1000 6000
+	AP_GROUPINFO("RC_POS2_FREQ", 10, AP_VideoTX, _rc_pos2_freq, 4190),
+
+	// @Param: RC_POS3_FREQ
+	// @DisplayName: Video Transmitter Frequency for CH POS 3
+	// @Description: Video Transmitter Frequency
+	// @User: Standard
+	// @ReadOnly: True
+	// @Range: 1000 6000
+	AP_GROUPINFO("RC_POS3_FREQ", 11, AP_VideoTX, _rc_pos3_freq, 4250),
+
+	// @Param: RC_POS4_FREQ
+	// @DisplayName: Video Transmitter Frequency for CH POS 4
+	// @Description: Video Transmitter Frequency
+	// @User: Standard
+	// @Range: 1000 6000
+	AP_GROUPINFO("RC_POS4_FREQ", 12, AP_VideoTX, _rc_pos4_freq, 4340),
+
+	// @Param: RC_POS5_FREQ
+	// @DisplayName: Video Transmitter Frequency for CH POS 5
+	// @Description: Video Transmitter Frequency
+	// @User: Standard
+	// @Range: 1000 6000
+	AP_GROUPINFO("RC_POS5_FREQ", 13, AP_VideoTX, _rc_pos5_freq, 4430),
+
     AP_GROUPEND
 };
 
@@ -87,21 +132,27 @@ const AP_Param::GroupInfo AP_VideoTX::var_info[] = {
 
 extern const AP_HAL::HAL& hal;
 
-const char * AP_VideoTX::band_names[] = {"A","B","E","F","R","L","1G3_A","1G3_B","X","3G3_A","3G3_B"};
+/**
+ * @deprecated
+ */
+const char * AP_VideoTX::band_names[] = {"A","B","E","F","R","P","H","U"};
 
+/**
+ * @deprecated
+ */
 const uint16_t AP_VideoTX::VIDEO_CHANNELS[AP_VideoTX::MAX_BANDS][VTX_MAX_CHANNELS] =
 {
-    { 5865, 5845, 5825, 5805, 5785, 5765, 5745, 5725}, /* Band A */
-    { 5733, 5752, 5771, 5790, 5809, 5828, 5847, 5866}, /* Band B */
-    { 5705, 5685, 5665, 5645, 5885, 5905, 5925, 5945}, /* Band E */
-    { 5740, 5760, 5780, 5800, 5820, 5840, 5860, 5880}, /* Airwave */
-    { 5658, 5695, 5732, 5769, 5806, 5843, 5880, 5917}, /* Race */
-    { 5362, 5399, 5436, 5473, 5510, 5547, 5584, 5621}, /* LO Race */
-    { 1080, 1120, 1160, 1200, 1240, 1280, 1320, 1360}, /* Band 1G3_A */
-    { 1080, 1120, 1160, 1200, 1258, 1280, 1320, 1360}, /* Band 1G3_B */
-    { 4990, 5020, 5050, 5080, 5110, 5140, 5170, 5200}, /* Band X */
-    { 3330, 3350, 3370, 3390, 3410, 3430, 3450, 3470}, /* Band 3G3_A */
-    { 3170, 3190, 3210, 3230, 3250, 3270, 3290, 3310}  /* Band 3G3_B */
+    {3000, 3030, 3060, 3090, 3120, 3150, 3180, 3210}, // A
+    {3240, 3270, 3300, 3330, 3370, 3400, 3430, 3470}, // B
+    {3500, 3530, 3560, 3590, 3620, 3650, 3680, 3710}, // E
+    {3740, 3770, 3800, 3830, 3860, 3890, 3920, 3950}, // F
+    {3980, 4010, 4040, 4070, 4100, 4130, 4160, 4190}, // R
+    {4220, 4250, 4280, 4310, 4340, 4370, 4400, 4430}, // P
+    {4470, 4500, 4530, 4560, 4590, 4620, 4650, 4680}, // H
+    {4710, 4740, 4770, 4812, 4839, 4872, 4911, 4938}, // U
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0}
 };
 
 // mapping of power level to milliwatt to dbm
@@ -419,6 +470,8 @@ bool AP_VideoTX::have_params_changed() const
 // update the configured frequency to match the channel and band
 void AP_VideoTX::update_configured_frequency()
 {
+	AP_VideoTX::announce_vtx_settings();
+
     _frequency_mhz.set_and_save(get_frequency_mhz(_band, _channel));
 }
 

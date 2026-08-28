@@ -94,7 +94,7 @@ void AP_SmartAudio::loop()
             Packet current_command;
 
             // repeatedly initialize UART until we know what the VTX is
-            if (!_initialised) {
+            if (!_initialised && !_send_command_only) {
                 // request settings every second
                 if (requests_queue.is_empty() && !hal.util->get_soft_armed() && now - _last_request_sent_ms > 1000) {
                     request_settings();
@@ -113,12 +113,12 @@ void AP_SmartAudio::loop()
                 _last_request_sent_ms = now;
 
                 // next loop we expect a response
-                _is_waiting_response = true;
+                _is_waiting_response = !_send_command_only;
             }
         }
 
         // nothing going on so give CPU to someone else
-        if (!_is_waiting_response || !_initialised) {
+        if (!_is_waiting_response || !_initialised || _send_command_only) {
             hal.scheduler->delay(100);
         }
 
@@ -142,12 +142,16 @@ void AP_SmartAudio::loop()
             _inline_buffer_length = 0;
             _is_waiting_response = false;
             debug("response timeout");
-        } else if (_initialised) {
+        } else if (_initialised || _send_command_only) {
             if (AP::vtx().have_params_changed() ||_vtx_power_change_pending
                 || _vtx_freq_change_pending || _vtx_options_change_pending) {
                 update_vtx_params();
                 set_configuration_pending(true);
                 vtx.set_configuration_finished(false);
+                if (_send_command_only) {
+                    continue;
+                }
+
                 // we've tried to update something, re-request the settings so that they
                 // are reflected correctly
                 request_settings();

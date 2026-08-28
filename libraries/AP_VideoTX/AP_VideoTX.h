@@ -53,8 +53,10 @@ public:
         VTX_CRSF_IGNORE_STAT  = (1 << 7),
     };
 
+    /** @deprecated **/
     static const char *band_names[];
 
+    /** @deprecated **/
     enum VideoBand {
         BAND_A,
         BAND_B,
@@ -91,7 +93,7 @@ public:
     };
 
     static PowerLevel _power_levels[VTX_MAX_POWER_LEVELS];
-
+    /** @deprecated **/
     static const uint16_t VIDEO_CHANNELS[MAX_BANDS][VTX_MAX_CHANNELS];
 
     static uint16_t get_frequency_mhz(uint8_t band, uint8_t channel) { return VIDEO_CHANNELS[band][channel]; }
@@ -200,6 +202,13 @@ private:
     // vtx options
     AP_Int16 _options;
     uint16_t _current_options;
+
+    AP_Int16 _rc_pos0_freq;
+    AP_Int16 _rc_pos1_freq;
+    AP_Int16 _rc_pos2_freq;
+    AP_Int16 _rc_pos3_freq;
+    AP_Int16 _rc_pos4_freq;
+    AP_Int16 _rc_pos5_freq;
 
     AP_Int8 _enabled;
     bool _current_enabled;
