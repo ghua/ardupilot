@@ -77,13 +77,16 @@ void AP_SmartAudio::loop()
         hal.scheduler->delay(100);
     }
 
+    _initialised = !_send_command_only;
+    _protocol_version = ProtocolVersion::SMARTAUDIO_SPEC_PROTOCOL_v21;
+
     // allocate response buffer
     uint8_t _response_buffer[AP_SMARTAUDIO_MAX_PACKET_SIZE];
 
     // initialise uart (this must be called from within tick b/c the UART begin must be called from the same thread as it is used from)
     _port->begin(_smartbaud, AP_SMARTAUDIO_UART_BUFSIZE_RX, AP_SMARTAUDIO_UART_BUFSIZE_TX);
 
-    _initialised = !_send_command_only;
+
 
     while (true) {
         // now time to control loop switching
@@ -114,7 +117,7 @@ void AP_SmartAudio::loop()
                 _last_request_sent_ms = now;
 
                 // next loop we expect a response
-                _is_waiting_response = !_send_command_only;
+                _is_waiting_response = true;
             }
         }
 
