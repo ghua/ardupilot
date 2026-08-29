@@ -64,6 +64,8 @@ bool AP_SmartAudio::init()
 
         AP::vtx().set_provider_enabled(AP_VideoTX::VTXType::SmartAudio);
 
+        set_band_channel(4, 2);
+
         return true;
     }
     return false;
