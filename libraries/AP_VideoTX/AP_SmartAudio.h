@@ -261,7 +261,5 @@ private:
 
     void set_configuration_pending(bool pending) { _vtx_changes_pending = pending; }
     bool is_configuration_pending(){ return _vtx_changes_pending;}
-    void set_send_command_only(bool send_command_only) { _send_command_only = send_command_only; }
-    bool is_send_command_only() { return _send_command_only; }
 };
 #endif
