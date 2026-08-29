@@ -87,7 +87,6 @@ void AP_SmartAudio::loop()
     _port->begin(_smartbaud, AP_SMARTAUDIO_UART_BUFSIZE_RX, AP_SMARTAUDIO_UART_BUFSIZE_TX);
 
 
-
     while (true) {
         // now time to control loop switching
         uint32_t now = AP_HAL::millis();
@@ -154,13 +153,11 @@ void AP_SmartAudio::loop()
                 update_vtx_params();
                 set_configuration_pending(true);
                 vtx.set_configuration_finished(false);
-                if (_send_command_only) {
-                    continue;
+                if (!_send_command_only) {
+                    // we've tried to update something, re-request the settings so that they
+                    // are reflected correctly
+                    request_settings();
                 }
-
-                // we've tried to update something, re-request the settings so that they
-                // are reflected correctly
-                request_settings();
             } else if (is_configuration_pending()) {
                 AP::vtx().announce_vtx_settings();
                 set_configuration_pending(false);

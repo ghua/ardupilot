@@ -53,10 +53,8 @@ public:
         VTX_CRSF_IGNORE_STAT  = (1 << 7),
     };
 
-    /** @deprecated **/
     static const char *band_names[];
 
-    /** @deprecated **/
     enum VideoBand {
         BAND_A,
         BAND_B,
@@ -93,7 +91,7 @@ public:
     };
 
     static PowerLevel _power_levels[VTX_MAX_POWER_LEVELS];
-    /** @deprecated **/
+
     static const uint16_t VIDEO_CHANNELS[MAX_BANDS][VTX_MAX_CHANNELS];
 
     static uint16_t get_frequency_mhz(uint8_t band, uint8_t channel) { return VIDEO_CHANNELS[band][channel]; }

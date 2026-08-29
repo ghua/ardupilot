@@ -132,14 +132,8 @@ const AP_Param::GroupInfo AP_VideoTX::var_info[] = {
 
 extern const AP_HAL::HAL& hal;
 
-/**
- * @deprecated
- */
-const char * AP_VideoTX::band_names[] = {"A","B","E","F","R","P","H","U"};
+const char * AP_VideoTX::band_names[] = {"A","B","E","F","R","L","1G3_A","1G3_B","X","3G3_A","3G3_B"};
 
-/**
- * @deprecated
- */
 const uint16_t AP_VideoTX::VIDEO_CHANNELS[AP_VideoTX::MAX_BANDS][VTX_MAX_CHANNELS] =
 {
     {3000, 3030, 3060, 3090, 3120, 3150, 3180, 3210}, // A
@@ -470,8 +464,6 @@ bool AP_VideoTX::have_params_changed() const
 // update the configured frequency to match the channel and band
 void AP_VideoTX::update_configured_frequency()
 {
-	AP_VideoTX::announce_vtx_settings();
-
     _frequency_mhz.set_and_save(get_frequency_mhz(_band, _channel));
 }
 
