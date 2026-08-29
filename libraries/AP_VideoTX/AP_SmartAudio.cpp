@@ -101,7 +101,9 @@ void AP_SmartAudio::loop()
             if (!_initialised) {
                 // request settings every second
                 if (requests_queue.is_empty() && !hal.util->get_soft_armed() && now - _last_request_sent_ms > 1000) {
-                    request_settings();
+                    if (!_send_command_only) {
+                        request_settings();
+                    }
                 }
             }
 
